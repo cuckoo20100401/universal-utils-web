@@ -27,7 +27,7 @@ public class ResponseUtils {
 	/**
 	 * 创建响应消息
 	 * @param success
-	 * @param code
+	 * @param code 比如0表示API调用成功，非0表示调用失败，其中1表示需要登录、2表示未获取授权等
 	 * @param message
 	 * @return
 	 */
