@@ -1,8 +1,6 @@
 package org.cuckoo.universal.utils.web;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,48 +8,6 @@ import javax.servlet.http.HttpServletResponse;
  * 服务器响应工具类
  */
 public class ResponseUtils {
-	
-	/**
-	 * 创建响应消息
-	 * @param success
-	 * @param message
-	 * @return
-	 */
-	public static Map<String, Object> createMsg(boolean success, String message){
-		Map<String, Object> msg = new HashMap<String, Object>();
-		msg.put("success", success);
-		msg.put("message", message);
-		return msg;
-	}
-	
-	/**
-	 * 创建响应消息
-	 * @param success
-	 * @param code 比如0表示API调用成功，非0表示调用失败，其中1表示需要登录、2表示未获取授权等
-	 * @param message
-	 * @return
-	 */
-	public static Map<String, Object> createMsg(boolean success, Integer code, String message){
-		Map<String, Object> msg = new HashMap<String, Object>();
-		msg.put("success", success);
-		msg.put("code", code);
-		msg.put("message", message);
-		return msg;
-	}
-	
-	/**
-	 * 创建响应消息
-	 * @param keys
-	 * @param values
-	 * @return
-	 */
-	public static Map<String, Object> createMsg(String[] keys, Object[] values){
-		Map<String, Object> msg = new HashMap<String, Object>();
-		for(int i=0;i<keys.length;i++){
-			msg.put(keys[i], values[i]);
-		}
-		return msg;
-	}
 	
 	/**
 	 * 向前台输出JSON
