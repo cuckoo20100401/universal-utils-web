@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 服务器响应工具类
+ * Response工具类
  */
 public class ResponseUtils {
 	
