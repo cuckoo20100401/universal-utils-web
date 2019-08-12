@@ -54,4 +54,8 @@ public class ResponseEntity {
 	public static Builder create() {
 		return new ResponseEntity().new Builder();
 	}
+	
+	public static Builder build() {
+		return create();
+	}
 }
