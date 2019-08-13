@@ -2,9 +2,6 @@ package org.cuckoo.universal.utils.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * 访问者工具类
- */
 public class VisitorUtils {
 	
 	/**

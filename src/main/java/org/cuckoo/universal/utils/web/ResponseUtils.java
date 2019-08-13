@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Response工具类
- */
 public class ResponseUtils {
 	
 	/**

@@ -3,10 +3,6 @@ package org.cuckoo.universal.utils.web;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 分页组件
- * @param <T> 实体对象
- */
 public class PageInfo<T> implements Serializable {
 	
 	private static final long serialVersionUID = 5965246754215069653L;

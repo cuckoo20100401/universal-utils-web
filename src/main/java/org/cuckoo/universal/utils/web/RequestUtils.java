@@ -5,9 +5,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Request工具类
- */
 public class RequestUtils {
 	
 	public static final String Range_Param_dateStart = "dateStart";
