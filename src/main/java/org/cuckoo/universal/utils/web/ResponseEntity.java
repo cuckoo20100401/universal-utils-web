@@ -97,18 +97,18 @@ public class ResponseEntity {
 	}
 	public Map<String, Object> asMap() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("success", this.success);
-		map.put("message", this.message);
-		map.put("code", this.code);
-		map.put("data", this.data);
+		if (this.success != null) map.put("success", this.success);
+		if (this.message != null) map.put("message", this.message);
+		if (this.code != null) map.put("code", this.code);
+		if (!this.data.isEmpty()) map.put("data", this.data);
 		return map;
 	}
 	public Map<String, Object> asMapWithout() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("success", this.success);
-		map.put("message", this.message);
-		map.put("code", this.code);
-		map.putAll(this.data);
+		if (this.success != null) map.put("success", this.success);
+		if (this.message != null) map.put("message", this.message);
+		if (this.code != null) map.put("code", this.code);
+		if (!this.data.isEmpty()) map.putAll(this.data);
 		return map;
 	}
 	public String asJSON() throws JsonProcessingException {
