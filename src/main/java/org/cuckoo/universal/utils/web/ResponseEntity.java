@@ -11,7 +11,7 @@ public class ResponseEntity {
 	private Boolean success;
 	private String message;
 	private Integer code;
-	private Map<String, Object> data = new HashMap<>();
+	private Map<String, Object> payload = new HashMap<>();
 	
 	public class Builder {
 		
@@ -85,11 +85,11 @@ public class ResponseEntity {
 		this.code = code;
 	}
 	public void put(String key, Object value) {
-		this.data.put(key, value);
+		this.payload.put(key, value);
 	}
 	@SuppressWarnings("unchecked")
 	public <T> T get(String key) {
-		Object value = this.data.get(key);
+		Object value = this.payload.get(key);
 		if (value != null) {
 			return (T) value;
 		}
@@ -100,7 +100,7 @@ public class ResponseEntity {
 		if (this.success != null) map.put("success", this.success);
 		if (this.message != null) map.put("message", this.message);
 		if (this.code != null) map.put("code", this.code);
-		if (!this.data.isEmpty()) map.put("data", this.data);
+		if (!this.payload.isEmpty()) map.put("payload", this.payload);
 		return map;
 	}
 	public Map<String, Object> asMapWithout() {
@@ -108,7 +108,7 @@ public class ResponseEntity {
 		if (this.success != null) map.put("success", this.success);
 		if (this.message != null) map.put("message", this.message);
 		if (this.code != null) map.put("code", this.code);
-		if (!this.data.isEmpty()) map.putAll(this.data);
+		if (!this.payload.isEmpty()) map.putAll(this.payload);
 		return map;
 	}
 	public String asJSON() throws JsonProcessingException {
