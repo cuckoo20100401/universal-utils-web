@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -15,30 +14,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cuckoo.universal.utils.web.ResponseEntity;
 import org.cuckoo.universal.utils.web.ResponseUtils;
 import org.cuckoo.universal.utils.web.auth.AuthUtils;
 import org.springframework.util.AntPathMatcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * 注：
  * 	1、只有配置this.authRules.put("/**", "authc")拦截所有请求的情况下，才会配置匿名访问，故匿名访问时不需要更新token。
- * 	2、因为cookie的作用域只跟域名和路径有关，跟端口无关，所以当一台服务器部署多个项目时，可能会出现token被相互覆盖的情况，待测试。
+ * 	2、因为cookie的作用域只跟域名和路径有关，跟端口无关，所以当一台服务器部署多个项目时，可能会出现token被相互覆盖的情况（解决办法：一台服务器只有一个IP，但可以有不同的域名，按域名保存token即可）。
  */
-public abstract class AbstractCookieAndTokenAuthFilter implements Filter {
-	
-	private static final Logger logger = LogManager.getFormatterLogger(AbstractCookieAndTokenAuthFilter.class);
-	
-	private FilterConfig filterConfig;
-	private Map<String, String> authRules;
-	private ObjectMapper jacksonObjectMapper = new ObjectMapper();
+public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilter {
 	
 	@Override
-	public void destroy() {}
+	public void init(FilterConfig filterConfig) throws ServletException {
+		this.filterConfig = filterConfig;
+		this.authRules = this.initAuthRules();
+	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -86,9 +78,11 @@ public abstract class AbstractCookieAndTokenAuthFilter implements Filter {
 			if (matchedAuthRule.indexOf("authc") != -1) {
 				logInfo.put("authAuthc", "yes");
 				String accessToken = null;
-				Cookie accessTokenCookie = Arrays.asList(request.getCookies()).stream().filter(cookie -> cookie.getName().equals("token")).findFirst().orElse(null);
-				if (accessTokenCookie != null) {
-					accessToken = accessTokenCookie.getValue();
+				if (request.getCookies() != null) {
+					Cookie accessTokenCookie = Arrays.asList(request.getCookies()).stream().filter(cookie -> cookie.getName().equals("token")).findFirst().orElse(null);
+					if (accessTokenCookie != null) {
+						accessToken = accessTokenCookie.getValue();
+					}
 				}
 				ResponseEntity re = this.verifyToken(accessToken);
 				if (re.success()) {
@@ -198,16 +192,9 @@ public abstract class AbstractCookieAndTokenAuthFilter implements Filter {
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		this.filterConfig = filterConfig;
-		this.authRules = this.initAuthRules();
-	}
-	
-	public abstract LinkedHashMap<String, String> initAuthRules();
-	public abstract ResponseEntity verifyToken(String accessToken);
-	public abstract String[] getCurrAuthUserRoles(String accessToken);
-	public abstract String[] getCurrAuthUserPerms(String accessToken);
-	public abstract ResponseEntity responseUnauthorizedRequest();
-	public abstract void updateToken(String accessToken, HttpServletResponse response);
+	protected abstract ResponseEntity verifyToken(String accessToken);
+	protected abstract String[] getCurrAuthUserRoles(String accessToken);
+	protected abstract String[] getCurrAuthUserPerms(String accessToken);
+	protected abstract ResponseEntity responseUnauthorizedRequest();
+	protected abstract void updateToken(String accessToken, HttpServletResponse response);
 }

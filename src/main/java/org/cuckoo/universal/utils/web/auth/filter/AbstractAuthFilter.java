@@ -13,7 +13,6 @@ import javax.servlet.ServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cuckoo.universal.utils.web.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,16 +33,10 @@ public abstract class AbstractAuthFilter implements Filter {
 	
 	@Override
 	public abstract void init(FilterConfig filterConfig) throws ServletException;
-	
 	@Override
 	public abstract void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException;
-	
 	@Override
 	public void destroy() {}
 	
-	public abstract LinkedHashMap<String, String> initAuthRules();
-	public abstract ResponseEntity verifyToken(String accessToken);
-	public abstract String[] getCurrAuthUserRoles(String accessToken);
-	public abstract String[] getCurrAuthUserPerms(String accessToken);
-	public abstract ResponseEntity responseUnauthorizedRequest();
+	protected abstract LinkedHashMap<String, String> initAuthRules();
 }
