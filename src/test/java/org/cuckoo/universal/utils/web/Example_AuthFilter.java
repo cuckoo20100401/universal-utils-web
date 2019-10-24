@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.cuckoo.universal.utils.web.auth.VerifyTokenResult;
 import org.cuckoo.universal.utils.web.auth.filter.AbstractCookieAndTokenAuthFilter;
 
 public class Example_AuthFilter extends AbstractCookieAndTokenAuthFilter {
@@ -39,33 +40,26 @@ public class Example_AuthFilter extends AbstractCookieAndTokenAuthFilter {
 	}
 
 	@Override
-	protected ResponseEntity verifyToken(String accessToken) {
+	protected VerifyTokenResult verifyToken(String accessToken) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected String[] getCurrAuthUserRoles(String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String[] getCurrAuthUserPerms(String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected ResponseEntity responseUnauthorizedRequest() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateToken(String accessToken, HttpServletResponse response) {
+	protected void updateToken(VerifyTokenResult verifyTokenResult, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	protected String responseVerityTokenFailureRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String responseUnauthorizedRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

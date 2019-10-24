@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.cuckoo.universal.utils.web.ResponseEntity;
 import org.cuckoo.universal.utils.web.ResponseUtils;
 import org.cuckoo.universal.utils.web.auth.AuthUtils;
+import org.cuckoo.universal.utils.web.auth.VerifyTokenResult;
 import org.springframework.util.AntPathMatcher;
 
 /**
@@ -73,8 +74,7 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 				return;
 			}
 			// validate authc
-			String[] currAuthUserRoles = null;
-			String[] currAuthUserPerms = null;
+			VerifyTokenResult verifyTokenResult = null;
 			if (matchedAuthRule.indexOf("authc") != -1) {
 				logInfo.put("authAuthc", "yes");
 				String accessToken = null;
@@ -84,25 +84,25 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 						accessToken = accessTokenCookie.getValue();
 					}
 				}
-				ResponseEntity re = this.verifyToken(accessToken);
-				if (re.success()) {
+				verifyTokenResult = this.verifyToken(accessToken);
+				if (verifyTokenResult.getResult()) {
 					logInfo.put("authAuthcResult", "ok");
-					currAuthUserRoles = this.getCurrAuthUserRoles(accessToken);
-					currAuthUserPerms = this.getCurrAuthUserPerms(accessToken);
-					this.updateToken(accessToken, response);
+					this.updateToken(verifyTokenResult, response);
 				} else {
-					logInfo.put("authAuthcResult", re.message());
+					logInfo.put("authAuthcResult", verifyTokenResult.getResultMessage());
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					if (re.get("toLoginPage") != null) {
-						response.sendRedirect(re.get("toLoginPage"));
+					String responseTypeString = this.responseVerityTokenFailureRequest();
+					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
+						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						ResponseUtils.writeJson(re.asJSON(), response);
+						String responseJson = ResponseEntity.create().failure().code(verifyTokenResult.getResultCode()).message(verifyTokenResult.getResultMessage()).asJSON();
+						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
 				}
 			}
 			// validate roles and perms
-			Integer code = AuthUtils.validateAuthRuleForRolesAndPerms(matchedAuthRule, currAuthUserRoles, currAuthUserPerms);
+			Integer code = AuthUtils.validateAuthRuleForRolesAndPerms(matchedAuthRule, verifyTokenResult.getCurrAuthUserRoles(), verifyTokenResult.getCurrAuthUserPerms());
 			if (code != 0) {
 				logInfo.put("authType", "roles_and_perms");
 				if (code == 1) {
@@ -113,17 +113,18 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 				} else if (code == -1) {
 					logInfo.put("authResult", "Unauthorized request");
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					ResponseEntity re = this.responseUnauthorizedRequest();
-					if (re.get("toLoginPage") != null) {
-						response.sendRedirect(re.get("toLoginPage"));
+					String responseTypeString = this.responseUnauthorizedRequest();
+					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
+						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						ResponseUtils.writeJson(re.asJSON(), response);
+						String responseJson = responseTypeString.substring(5);
+						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
 				}
 			}
 			// validate roles or perms
-			code = AuthUtils.validateAuthRuleForRolesOrPerms(matchedAuthRule, currAuthUserRoles, currAuthUserPerms);
+			code = AuthUtils.validateAuthRuleForRolesOrPerms(matchedAuthRule, verifyTokenResult.getCurrAuthUserRoles(), verifyTokenResult.getCurrAuthUserPerms());
 			if (code != 0) {
 				logInfo.put("authType", "roles_or_perms");
 				if (code == 1) {
@@ -134,17 +135,18 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 				} else if (code == -1) {
 					logInfo.put("authResult", "Unauthorized request");
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					ResponseEntity re = this.responseUnauthorizedRequest();
-					if (re.get("toLoginPage") != null) {
-						response.sendRedirect(re.get("toLoginPage"));
+					String responseTypeString = this.responseUnauthorizedRequest();
+					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
+						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						ResponseUtils.writeJson(re.asJSON(), response);
+						String responseJson = responseTypeString.substring(5);
+						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
 				}
 			}
 			// validate roles
-			code = AuthUtils.validateAuthRuleForRoles(matchedAuthRule, currAuthUserRoles, currAuthUserPerms);
+			code = AuthUtils.validateAuthRuleForRoles(matchedAuthRule, verifyTokenResult.getCurrAuthUserRoles(), verifyTokenResult.getCurrAuthUserPerms());
 			if (code != 0) {
 				logInfo.put("authType", "roles");
 				if (code == 1) {
@@ -155,17 +157,18 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 				} else if (code == -1) {
 					logInfo.put("authResult", "Unauthorized request");
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					ResponseEntity re = this.responseUnauthorizedRequest();
-					if (re.get("toLoginPage") != null) {
-						response.sendRedirect(re.get("toLoginPage"));
+					String responseTypeString = this.responseUnauthorizedRequest();
+					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
+						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						ResponseUtils.writeJson(re.asJSON(), response);
+						String responseJson = responseTypeString.substring(5);
+						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
 				}
 			}
 			// validate perms
-			code = AuthUtils.validateAuthRuleForPerms(matchedAuthRule, currAuthUserRoles, currAuthUserPerms);
+			code = AuthUtils.validateAuthRuleForPerms(matchedAuthRule, verifyTokenResult.getCurrAuthUserRoles(), verifyTokenResult.getCurrAuthUserPerms());
 			if (code != 0) {
 				logInfo.put("authType", "perms");
 				if (code == 1) {
@@ -176,11 +179,12 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 				} else if (code == -1) {
 					logInfo.put("authResult", "Unauthorized request");
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					ResponseEntity re = this.responseUnauthorizedRequest();
-					if (re.get("toLoginPage") != null) {
-						response.sendRedirect(re.get("toLoginPage"));
+					String responseTypeString = this.responseUnauthorizedRequest();
+					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
+						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						ResponseUtils.writeJson(re.asJSON(), response);
+						String responseJson = responseTypeString.substring(5);
+						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
 				}
@@ -192,9 +196,8 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
 
-	protected abstract ResponseEntity verifyToken(String accessToken);
-	protected abstract String[] getCurrAuthUserRoles(String accessToken);
-	protected abstract String[] getCurrAuthUserPerms(String accessToken);
-	protected abstract ResponseEntity responseUnauthorizedRequest();
-	protected abstract void updateToken(String accessToken, HttpServletResponse response);
+	protected abstract VerifyTokenResult verifyToken(String accessToken);
+	protected abstract void updateToken(VerifyTokenResult verifyTokenResult, HttpServletResponse response);
+	protected abstract String responseVerityTokenFailureRequest();
+	protected abstract String responseUnauthorizedRequest();
 }
