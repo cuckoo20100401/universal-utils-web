@@ -191,7 +191,6 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 			}
 		}
 		
-		logInfo.put("authType", "have no matchedAuthRule");
 		logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
 		filterChain.doFilter(servletRequest, servletResponse);
 	}
