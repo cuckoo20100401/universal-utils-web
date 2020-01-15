@@ -12,6 +12,7 @@ public class RequestUtils {
 	public static final String Range_Param_priceStart = "priceStart";
 	public static final String Range_Param_priceEnd = "priceEnd";
 
+	@Deprecated
 	public static Map<String, String> getRangeParams(HttpServletRequest request) {
 		Map<String, String> rangeParams = new HashMap<>();
 		rangeParams.put(Range_Param_dateStart, request.getParameter(Range_Param_dateStart));
