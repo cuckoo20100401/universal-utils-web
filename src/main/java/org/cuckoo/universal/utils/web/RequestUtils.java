@@ -21,4 +21,12 @@ public class RequestUtils {
 		rangeParams.put(Range_Param_priceEnd, request.getParameter(Range_Param_priceEnd));
 		return rangeParams;
 	}
+	
+	public static Map<String, String> getRangeParameters(HttpServletRequest request, String ...parameters) {
+		Map<String, String> rangeParameters = new HashMap<>();
+		for (String parameter: parameters) {
+			rangeParameters.put(parameter, request.getParameter(parameter));
+		}
+		return rangeParameters;
+	}
 }
