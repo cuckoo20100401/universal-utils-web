@@ -75,7 +75,7 @@ public abstract class AbstractTokenAuthFilter extends AbstractAuthFilter {
 				} else {
 					logInfo.put("auth-authc", verifyTokenResult.getResultMessage());
 					logger.debug(jacksonObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(logInfo));
-					String responseJson = ResponseEntity.create().failure().code(verifyTokenResult.getResultCode()).message(verifyTokenResult.getResultMessage()).asJSON();
+					String responseJson = this.jacksonObjectMapper.writeValueAsString(ResponseEntity.failure(verifyTokenResult.getResultCode(), verifyTokenResult.getResultMessage()));
 					ResponseUtils.writeJson(responseJson, response);
 					return;
 				}

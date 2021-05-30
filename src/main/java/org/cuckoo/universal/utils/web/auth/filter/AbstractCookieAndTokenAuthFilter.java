@@ -95,7 +95,7 @@ public abstract class AbstractCookieAndTokenAuthFilter extends AbstractAuthFilte
 					if (responseTypeString != null && responseTypeString.startsWith("url:")) {
 						response.sendRedirect(responseTypeString.substring(4));
 					} else {
-						String responseJson = ResponseEntity.create().failure().code(verifyTokenResult.getResultCode()).message(verifyTokenResult.getResultMessage()).asJSON();
+						String responseJson = this.jacksonObjectMapper.writeValueAsString(ResponseEntity.failure(verifyTokenResult.getResultCode(), verifyTokenResult.getResultMessage()));
 						ResponseUtils.writeJson(responseJson, response);
 					}
 					return;
