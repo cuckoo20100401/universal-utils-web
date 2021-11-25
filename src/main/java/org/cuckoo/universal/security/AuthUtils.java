@@ -1,4 +1,7 @@
-package org.cuckoo.universal.utils.web.auth;
+package org.cuckoo.universal.security;
+
+import org.cuckoo.universal.utils.ResultEntity;
+import org.cuckoo.universal.utils.web.ResponseCode;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -11,9 +14,9 @@ public class AuthUtils {
 	 * @param authRule 系统配置的认证规则，从中提取此次访问必须的角色和权限
 	 * @param userRoles 访问用户已有的角色列表
 	 * @param userPerms 访问用户已有的权限列表
-	 * @return 0：不匹配此认证规则模板，换下一个模板；1：有权限，认证通过；-1：无权限，认证不通过
+	 * @return 第一种情况：不匹配此认证规则模板，换下一个模板；第二种情况：有权限，认证通过；第三种情况：无权限，认证不通过
 	 */
-	public static Integer validateAuthRuleForRolesAndPerms(String authRule, String[] userRoles, String[] userPerms) {
+	public static ResultEntity validateAuthRuleForRolesAndPerms(String authRule, String[] userRoles, String[] userPerms) {
 		
 		String regex = "authc, roles\\[(.*)\\] and perms\\[(.*)\\]";
 		
@@ -38,12 +41,12 @@ public class AuthUtils {
 			}
 			
 			if (hasRoleCount == requiredRoles.length && hasPermCount == requiredPerms.length) {
-				return 1;
+				return ResultEntity.builder().success().build();
 			} else {
-				return -1;
+				return ResultEntity.builder().failure().code(ResponseCode.AUTH_TOKEN_IS_NO_PERMISSION).message("unauthorized request").build();
 			}
 		}
-		return 0;
+		return ResultEntity.builder().nothing().build();
 	}
 	
 	/**
@@ -51,9 +54,9 @@ public class AuthUtils {
 	 * @param authRule 系统配置的认证规则，从中提取此次访问必须的角色和权限
 	 * @param userRoles 访问用户已有的角色列表
 	 * @param userPerms 访问用户已有的权限列表
-	 * @return 0：不匹配此认证规则模板，换下一个模板；1：有权限，认证通过；-1：无权限，认证不通过
+	 * @return 第一种情况：不匹配此认证规则模板，换下一个模板；第二种情况：有权限，认证通过；第三种情况：无权限，认证不通过
 	 */
-	public static Integer validateAuthRuleForRolesOrPerms(String authRule, String[] userRoles, String[] userPerms) {
+	public static ResultEntity validateAuthRuleForRolesOrPerms(String authRule, String[] userRoles, String[] userPerms) {
 		
 		String regex = "authc, roles\\[(.*)\\] or perms\\[(.*)\\]";
 		
@@ -78,12 +81,12 @@ public class AuthUtils {
 			}
 			
 			if (hasRoleCount == requiredRoles.length || hasPermCount == requiredPerms.length) {
-				return 1;
+				return ResultEntity.builder().success().build();
 			} else {
-				return -1;
+				return ResultEntity.builder().failure().code(ResponseCode.AUTH_TOKEN_IS_NO_PERMISSION).message("unauthorized request").build();
 			}
 		}
-		return 0;
+		return ResultEntity.builder().nothing().build();
 	}
 	
 	/**
@@ -91,9 +94,9 @@ public class AuthUtils {
 	 * @param authRule 系统配置的认证规则，从中提取此次访问必须的角色和权限
 	 * @param userRoles 访问用户已有的角色列表
 	 * @param userPerms 访问用户已有的权限列表
-	 * @return 0：不匹配此认证规则模板，换下一个模板；1：有权限，认证通过；-1：无权限，认证不通过
+	 * @return 第一种情况：不匹配此认证规则模板，换下一个模板；第二种情况：有权限，认证通过；第三种情况：无权限，认证不通过
 	 */
-	public static Integer validateAuthRuleForRoles(String authRule, String[] userRoles, String[] userPerms) {
+	public static ResultEntity validateAuthRuleForRoles(String authRule, String[] userRoles, String[] userPerms) {
 		
 		String regex = "authc, roles\\[(.*)\\]";
 		
@@ -111,12 +114,12 @@ public class AuthUtils {
 			}
 			
 			if (hasRoleCount == requiredRoles.length) {
-				return 1;
+				return ResultEntity.builder().success().build();
 			} else {
-				return -1;
+				return ResultEntity.builder().failure().code(ResponseCode.AUTH_TOKEN_IS_NO_PERMISSION).message("unauthorized request").build();
 			}
 		}
-		return 0;
+		return ResultEntity.builder().nothing().build();
 	}
 	
 	/**
@@ -124,9 +127,9 @@ public class AuthUtils {
 	 * @param authRule 系统配置的认证规则，从中提取此次访问必须的角色和权限
 	 * @param userRoles 访问用户已有的角色列表
 	 * @param userPerms 访问用户已有的权限列表
-	 * @return 0：不匹配此认证规则模板，换下一个模板；1：有权限，认证通过；-1：无权限，认证不通过
+	 * @return 第一种情况：不匹配此认证规则模板，换下一个模板；第二种情况：有权限，认证通过；第三种情况：无权限，认证不通过
 	 */
-	public static Integer validateAuthRuleForPerms(String authRule, String[] userRoles, String[] userPerms) {
+	public static ResultEntity validateAuthRuleForPerms(String authRule, String[] userRoles, String[] userPerms) {
 		
 		String regex = "authc, perms\\[(.*)\\]";
 		
@@ -144,11 +147,11 @@ public class AuthUtils {
 			}
 			
 			if (hasPermCount == requiredPerms.length) {
-				return 1;
+				return ResultEntity.builder().success().build();
 			} else {
-				return -1;
+				return ResultEntity.builder().failure().code(ResponseCode.AUTH_TOKEN_IS_NO_PERMISSION).message("unauthorized request").build();
 			}
 		}
-		return 0;
+		return ResultEntity.builder().nothing().build();
 	}
 }

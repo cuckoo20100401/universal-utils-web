@@ -2,14 +2,8 @@ package org.cuckoo.universal.utils.web;
 
 import java.util.LinkedHashMap;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.cuckoo.universal.utils.web.auth.VerifyTokenResult;
-import org.cuckoo.universal.utils.web.auth.filter.AbstractCookieAndTokenAuthFilter;
-
-public class Example_AuthFilter extends AbstractCookieAndTokenAuthFilter {
+public class Example_AuthRules {
 	
-	@Override
 	protected LinkedHashMap<String, String> initAuthRules() {
 		
 		LinkedHashMap<String, String> authRules = new LinkedHashMap<>();
@@ -37,29 +31,5 @@ public class Example_AuthFilter extends AbstractCookieAndTokenAuthFilter {
 		//其它
 		authRules.put("/**", "authc");
 		return authRules;
-	}
-
-	@Override
-	protected VerifyTokenResult verifyToken(String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void updateToken(VerifyTokenResult verifyTokenResult, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected String responseVerityTokenFailureRequest() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String responseUnauthorizedRequest() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

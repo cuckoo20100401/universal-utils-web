@@ -1,8 +1,11 @@
 package org.cuckoo.universal.utils.web;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
-public class ResponseEntity extends HashMap<String, Object> {
+/**
+ * ResponseEntity
+ */
+public class ResponseEntity extends LinkedHashMap<String, Object> {
 
 	private static final long serialVersionUID = 2614846568297522329L;
 
@@ -15,20 +18,20 @@ public class ResponseEntity extends HashMap<String, Object> {
     }
 
     public static ResponseEntity success() {
-        return new ResponseEntity(true, 20000, "ok");
+        return new ResponseEntity(true, 200000, "ok");
     }
     public static ResponseEntity success(String message) {
-        return new ResponseEntity(true, 20000, message);
+        return new ResponseEntity(true, 200000, message);
     }
     public static ResponseEntity success(Integer code, String message) {
         return new ResponseEntity(true, code, message);
     }
 
     public static ResponseEntity failure() {
-        return new ResponseEntity(false, 50000, "ok");
+        return new ResponseEntity(false, 500000, "error");
     }
     public static ResponseEntity failure(String message) {
-        return new ResponseEntity(false, 50000, message);
+        return new ResponseEntity(false, 500000, message);
     }
     public static ResponseEntity failure(Integer code, String message) {
         return new ResponseEntity(false, code, message);
@@ -44,9 +47,9 @@ public class ResponseEntity extends HashMap<String, Object> {
     @SuppressWarnings("unchecked")
 	public ResponseEntity addPayload(String key, Object value) {
 
-        HashMap<String, Object> payload = (HashMap<String, Object>) this.get("payload");
+        LinkedHashMap<String, Object> payload = (LinkedHashMap<String, Object>) this.get("payload");
         if (payload == null) {
-            payload = new HashMap<>();
+            payload = new LinkedHashMap<>();
         }
 
         payload.put(key, value);
