@@ -2,6 +2,8 @@ package org.cuckoo.universal.utils.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 public class Test_ResponseEntity {
 
@@ -16,6 +18,7 @@ public class Test_ResponseEntity {
         System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity));
     }
 
+    @GetMapping("/getList")
     public ResponseEntity getList() {
         ResponseEntity.success();
         ResponseEntity.success().addPayload("pageInfo", null);
@@ -24,6 +27,7 @@ public class Test_ResponseEntity {
         return ResponseEntity.success().addPayload("allSysRoles", null).addPayload("pageInfo", null);
     }
 
+    @PostMapping("/save")
     public ResponseEntity save() {
         ResponseEntity.failure();
         ResponseEntity.failure("保存失败");

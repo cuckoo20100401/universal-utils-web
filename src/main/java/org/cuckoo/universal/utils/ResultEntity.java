@@ -4,6 +4,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * ResultEntity
+ *
+ * <p>
+ *     该类已被 Result.java 替代
+ * </p>
+ */
+@Deprecated
 public class ResultEntity {
 	
 	private Boolean success;

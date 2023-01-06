@@ -98,7 +98,7 @@ public class FileUtils {
 	}
 
 	/**
-	 * 复制文件
+	 * 复制文件（此复制方法经实践是有问题的，后面需参考在中软增量部署 生成target目录 的copy方法重写下）
 	 * @param srcFilePath
 	 * @param targetFilePath
 	 * @throws IOException
